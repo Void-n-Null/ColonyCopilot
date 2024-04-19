@@ -1,0 +1,107 @@
+{
+  "version": 3,
+  "targets": {
+    "net7.0": {
+      "OpenAI-DotNet/7.7.6": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/OpenAI-DotNet.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/OpenAI-DotNet.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "OpenAI-DotNet/7.7.6": {
+      "sha512": "gILl7WFpS4edu35iDoqaCW0vvknZ4S8UrZKT4hlQGUoUs0qtnSpkCEmPAQOferGcnlRph8Vi9B6Yu8yAIRdkPA==",
+      "type": "package",
+      "path": "openai-dotnet/7.7.6",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Assets/OpenAI-DotNet-Icon.png",
+        "LICENSE",
+        "README.md",
+        "lib/net6.0/OpenAI-DotNet.dll",
+        "openai-dotnet.7.7.6.nupkg.sha512",
+        "openai-dotnet.nuspec"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net7.0": [
+      "OpenAI-DotNet >= 7.7.6"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\Blake\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "D:\\Games\\Rimworld 1.5\\Rimworld\\Mods\\ColonyCopilot\\Source\\ColonyCopilot\\ColonyCopilot\\ColonyCopilot.csproj",
+      "projectName": "ColonyCopilot",
+      "projectPath": "D:\\Games\\Rimworld 1.5\\Rimworld\\Mods\\ColonyCopilot\\Source\\ColonyCopilot\\ColonyCopilot\\ColonyCopilot.csproj",
+      "packagesPath": "C:\\Users\\Blake\\.nuget\\packages\\",
+      "outputPath": "D:\\Games\\Rimworld 1.5\\Rimworld\\Mods\\ColonyCopilot\\Source\\ColonyCopilot\\ColonyCopilot\\obj\\",
+      "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
+      "configFilePaths": [
+        "C:\\Users\\Blake\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net7.0"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net7.0": {
+        "targetAlias": "net7.0",
+        "dependencies": {
+          "OpenAI-DotNet": {
+            "target": "Package",
+            "version": "[7.7.6, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.302\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

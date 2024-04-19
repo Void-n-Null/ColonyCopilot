@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "LZNyRiHm6RAI1jmtlklzWdQl5C20RGeuLvLZTGO+UYTc8kCtknyq7aobve97FyQ+j3ix9XoM7lanFwuecQFL3g==",
+  "success": true,
+  "projectFilePath": "D:\\Games\\Rimworld 1.5\\Rimworld\\Mods\\ColonyCopilot\\Source\\ColonyCopilot\\ColonyCopilot\\ColonyCopilot.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Blake\\.nuget\\packages\\openai-dotnet\\7.7.6\\openai-dotnet.7.7.6.nupkg.sha512"
+  ],
+  "logs": []
+}
