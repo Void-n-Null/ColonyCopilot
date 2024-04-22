@@ -1,2 +1,7 @@
 bin/
 packages/
+*.cache
+*.json
+*.xml
+*.json
+/Source/ColonyCopilot.Rimworld/obj

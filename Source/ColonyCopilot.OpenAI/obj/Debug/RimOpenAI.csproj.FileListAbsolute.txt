@@ -1,7 +1,0 @@
-D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Assemblies\RimOpenAI.dll
-D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Assemblies\RimOpenAI.pdb
-D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\RimOpenAI\obj\Debug\RimOpenAI.csproj.AssemblyReference.cache
-D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\RimOpenAI\obj\Debug\RimOpenAI.csproj.CoreCompileInputs.cache
-D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\RimOpenAI\obj\Debug\RimOpenAI.csproj.CopyComplete
-D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\RimOpenAI\obj\Debug\RimOpenAI.dll
-D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\RimOpenAI\obj\Debug\RimOpenAI.pdb

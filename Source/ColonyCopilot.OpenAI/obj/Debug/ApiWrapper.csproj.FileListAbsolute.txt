@@ -1,6 +1,0 @@
-D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Assemblies\ApiWrapper.dll
-D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Assemblies\ApiWrapper.pdb
-D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ApiWrapper\obj\Debug\ApiWrapper.csproj.AssemblyReference.cache
-D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ApiWrapper\obj\Debug\ApiWrapper.csproj.CoreCompileInputs.cache
-D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ApiWrapper\obj\Debug\ApiWrapper.dll
-D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ApiWrapper\obj\Debug\ApiWrapper.pdb
