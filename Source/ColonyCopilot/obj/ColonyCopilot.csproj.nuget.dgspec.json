@@ -1,0 +1,76 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Games\\Rimworld 1.5\\Rimworld\\Mods\\ColonyCopilot\\Source\\ColonyCopilot\\ColonyCopilot.csproj": {}
+  },
+  "projects": {
+    "D:\\Games\\Rimworld 1.5\\Rimworld\\Mods\\ColonyCopilot\\Source\\ColonyCopilot\\ColonyCopilot.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Games\\Rimworld 1.5\\Rimworld\\Mods\\ColonyCopilot\\Source\\ColonyCopilot\\ColonyCopilot.csproj",
+        "projectName": "ColonyCopilot",
+        "projectPath": "D:\\Games\\Rimworld 1.5\\Rimworld\\Mods\\ColonyCopilot\\Source\\ColonyCopilot\\ColonyCopilot.csproj",
+        "packagesPath": "C:\\Users\\Blake\\.nuget\\packages\\",
+        "outputPath": "D:\\Games\\Rimworld 1.5\\Rimworld\\Mods\\ColonyCopilot\\Source\\ColonyCopilot\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Blake\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net472"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net472": {
+            "targetAlias": "net472",
+            "projectReferences": {
+              "D:\\Games\\Rimworld 1.5\\Rimworld\\Mods\\ColonyCopilot\\Source\\RimOpenAI\\RimOpenAI.csproj": {
+                "projectPath": "D:\\Games\\Rimworld 1.5\\Rimworld\\Mods\\ColonyCopilot\\Source\\RimOpenAI\\RimOpenAI.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net472": {
+          "targetAlias": "net472",
+          "dependencies": {
+            "NUnit.Runners": {
+              "target": "Package",
+              "version": "[3.12.0, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.302\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Games\\Rimworld 1.5\\Rimworld\\Mods\\ColonyCopilot\\Source\\RimOpenAI\\RimOpenAI.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\Games\\Rimworld 1.5\\Rimworld\\Mods\\ColonyCopilot\\Source\\RimOpenAI\\RimOpenAI.csproj",
+        "projectName": "RimOpenAI",
+        "projectPath": "D:\\Games\\Rimworld 1.5\\Rimworld\\Mods\\ColonyCopilot\\Source\\RimOpenAI\\RimOpenAI.csproj",
+        "frameworks": {
+          "net472": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net472": {}
+      }
+    }
+  }
+}
