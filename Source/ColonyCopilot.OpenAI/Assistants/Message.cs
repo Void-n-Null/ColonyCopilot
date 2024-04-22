@@ -1,7 +1,6 @@
-using UnityEngine;
 using System;
 
-namespace RimOpenAI.Assistants
+namespace ColonyCopilot.OpenAI.Assistants
 {
     public class Message
     {

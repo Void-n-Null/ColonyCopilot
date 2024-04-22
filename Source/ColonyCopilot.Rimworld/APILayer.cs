@@ -1,21 +1,22 @@
 using UnityEngine;
 using System;
 using System.Net.Cache;
-using RimOpenAI;
-using RimOpenAI.Assistants;
-using RimOpenAI.Web;
+using ColonyCopilot.OpenAI;
+using ColonyCopilot.OpenAI.Assistants;
+using ColonyCopilot.OpenAI.Web;
 using UnityEngine.Networking;
 using Verse;
-using Message = RimOpenAI.Assistants.Message;
-using Thread = RimOpenAI.Assistants.Thread;
+using Message = ColonyCopilot.OpenAI.Assistants.Message;
+using Thread = ColonyCopilot.OpenAI.Assistants.Thread;
 
-namespace ColonyCopilot;
+namespace ColonyCopilot.Rimworld;
 
 /// <summary>
 /// Interact with the API Wrapper to handle interactions with LLMs
 /// </summary>
 public static class APILayer
 {
+    /*
     public static async Task<string> GetURL(string url)
     {
         string response;
@@ -31,6 +32,7 @@ public static class APILayer
             throw;
         }
     }
+    */
     
     /*public static async Task<string> GetAssistantResponse(string content)
     {

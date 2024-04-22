@@ -1,7 +1,6 @@
-using UnityEngine;
 using System;
 
-namespace RimOpenAI
+namespace ColonyCopilot.OpenAI
 {
     public class Client
     {
