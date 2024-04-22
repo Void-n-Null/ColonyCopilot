@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColonyCopilot", "ColonyCopilot\ColonyCopilot.csproj", "{4FEE42CA-8777-486C-A4B7-DA90D804096A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColonyCopilot.Rimworld", "ColonyCopilot.Rimworld\ColonyCopilot.Rimworld.csproj", "{4FEE42CA-8777-486C-A4B7-DA90D804096A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RimOpenAI", "RimOpenAI\RimOpenAI.csproj", "{B47A2AF1-9AB5-4759-A71D-3048E09AA879}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColonyCopilot.OpenAI", "ColonyCopilot.OpenAI\ColonyCopilot.OpenAI.csproj", "{B47A2AF1-9AB5-4759-A71D-3048E09AA879}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColonyCopilot.Tests", "ColonyCopilot.Tests\ColonyCopilot.Tests.csproj", "{83494E40-F36C-4410-A799-8AEB5F26484C}"
 EndProject

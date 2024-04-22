@@ -10,8 +10,10 @@
         <AppDesignerFolder>Properties</AppDesignerFolder>
         <RootNamespace>ColonyCopilot.Tests</RootNamespace>
         <AssemblyName>ColonyCopilot.Tests</AssemblyName>
+        <BuildProjectOnPreprocessResolveReferences>false</BuildProjectOnPreprocessResolveReferences>
         <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
+        <LangVersion>11</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -50,6 +52,9 @@
           <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
         </Reference>
         <Reference Include="System.Xml" />
+        <Reference Include="UnityEngine.UnityWebRequestModule">
+          <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.UnityWebRequestModule.dll</HintPath>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
         <Compile Include="AssistantTests.cs" />
@@ -60,9 +65,9 @@
       <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\RimOpenAI\RimOpenAI.csproj">
+      <ProjectReference Include="..\ColonyCopilot.OpenAI\ColonyCopilot.OpenAI.csproj">
         <Project>{b47a2af1-9ab5-4759-a71d-3048e09aa879}</Project>
-        <Name>RimOpenAI</Name>
+        <Name>ColonyCopilot.OpenAI</Name>
       </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

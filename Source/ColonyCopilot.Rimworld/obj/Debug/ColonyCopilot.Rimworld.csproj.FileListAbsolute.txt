@@ -1,0 +1,10 @@
+D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Assemblies\ColonyCopilot.Rimworld.dll
+D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Assemblies\ColonyCopilot.Rimworld.pdb
+D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.Rimworld\obj\Debug\ColonyCopilot.Rimworld.csproj.AssemblyReference.cache
+D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.Rimworld\obj\Debug\ColonyCopilot.Rimworld.GeneratedMSBuildEditorConfig.editorconfig
+D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.Rimworld\obj\Debug\ColonyCopilot.Rimworld.AssemblyInfoInputs.cache
+D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.Rimworld\obj\Debug\ColonyCopilot.Rimworld.AssemblyInfo.cs
+D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.Rimworld\obj\Debug\ColonyCopilot.Rimworld.csproj.CoreCompileInputs.cache
+D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.Rimworld\obj\Debug\ColonyCopilot.Rimworld.csproj.CopyComplete
+D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.Rimworld\obj\Debug\ColonyCopilot.Rimworld.dll
+D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.Rimworld\obj\Debug\ColonyCopilot.Rimworld.pdb
