@@ -1,5 +1,6 @@
 // Run.cs
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ColonyCopilot.OpenAI.Web;
@@ -9,8 +10,17 @@ namespace ColonyCopilot.OpenAI.Assistants
 {
     public class Run
     {
+        [JsonProperty("id")]
         public string Id { get; set; }
+        
+        [JsonProperty("assistant_id")]
+        public string AssistantId { get; set; }
+        
+        [JsonProperty("status")]
         public string Status { get; set; }
+        
+        [JsonProperty("last_error")]
+        public RunError LastError { get; set; }
         
         public Thread Thread { get; set; }
         
@@ -24,10 +34,15 @@ namespace ColonyCopilot.OpenAI.Assistants
             };
 
             var response = await HttpRequestHandler.SendGetRequest(url, headers);
-            return JsonConvert.DeserializeObject<Run>(response);
+            var run = JsonConvert.DeserializeObject<Run>(response);
+            run.Thread = Thread;
+            run.AssistantId = AssistantId;
+            return run;
         }
-        
-        public static async Task<Run> Create(Assistant assistant, Thread thread, string instructions = null)
+
+
+
+        public static async Task<Run> Create(Assistant assistant, Thread thread, string instructions)
         {
             var runData = new
             {
@@ -47,6 +62,14 @@ namespace ColonyCopilot.OpenAI.Assistants
             var run = JsonConvert.DeserializeObject<Run>(response);
             run.Thread = thread;
             return run;
+        }
+
+        public class RunError
+        {
+            [JsonProperty("code")]
+            public string Code;
+            [JsonProperty("message")]
+            public string Message;
         }
     }
 }
