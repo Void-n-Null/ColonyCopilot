@@ -16,7 +16,6 @@ D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.Tests\obj
 D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.Tests\obj\Debug\ColonyCopilot.Tests.pdb
 D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.Tests\bin\Debug\UnityEngine.SharedInternalsModule.dll
 D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.Tests\bin\Debug\UnityEngine.CoreModule.dll
-D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.Tests\bin\Debug\Newtonsoft.Json.dll
-D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.Tests\bin\Debug\Newtonsoft.Json.xml
 D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.Tests\bin\Debug\ColonyCopilot.OpenAI.dll
 D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.Tests\bin\Debug\ColonyCopilot.OpenAI.pdb
+D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.Tests\bin\Debug\Unity.Newtonsoft.Json.dll
