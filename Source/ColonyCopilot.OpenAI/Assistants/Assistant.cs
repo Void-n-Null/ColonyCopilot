@@ -1,40 +1,28 @@
 // Assistant.cs
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ColonyCopilot.OpenAI.Web;
 using ColonyCopilot.OpenAI;
 using ColonyCopilot.OpenAI.Assistants;
+using ColonyCopilot.OpenAI.ResponseModels;
 using Newtonsoft.Json;
 
 namespace ColonyCopilot.OpenAI.Assistants
 {
     public class Assistant
     {
+        [JsonProperty("id")]
         public string Id { get; private set; }
+        [JsonProperty("name")]
         public string Name { get; private set; }
+        [JsonProperty("instructions")]
         public string Instructions { get; private set; }
+        [JsonProperty("tools")]
         public List<Tool> Tools { get; set; }
+        [JsonProperty("model")]
         public string Model { get; private set; }
         public Client Client { get; private set; }
-        
-        private class ResponseObject
-        {
-            [JsonProperty("id")]
-            public string Id { get; set; }
-            [JsonProperty("name")]
-            public string Name { get; set; }
-            [JsonProperty("instructions")]
-            public string Instructions { get; set; }
-            [JsonProperty("model")]
-            public string Model { get; set; }
-        }
-
-        private class ResponseObjectList
-        {
-            [JsonProperty("data")]
-            public List<ResponseObject> Data { get; set; }
-            
-        }
 
         private Assistant() { }
 
@@ -46,40 +34,52 @@ namespace ColonyCopilot.OpenAI.Assistants
                 {"Authorization", "Bearer " + client.ApiKey},
                 {"OpenAI-Beta", "assistants=v2"}
             };
-            
+
             var response = await HttpRequestHandler.SendGetRequest(url, headers);
-            var responseObject = JsonConvert.DeserializeObject<ResponseObjectList>(response.ToString());
-            var assistants = new List<Assistant>();
-            
-            foreach (var assistant in responseObject.Data)
+            var assistantList = JsonConvert.DeserializeObject<AssistantResponseList>(response);
+            var output = assistantList.Assistants.Select(data => new Assistant
             {
-                assistants.Add(new Assistant
-                {
-                    Id = assistant.Id,
-                    Name = assistant.Name,
-                    Instructions = assistant.Instructions,
-                    Model = assistant.Model,
-                    Tools = new List<Tool>(),
-                    Client = client
-                });
-            }
-            
-            return assistants;
+                Id = data.Id,
+                Name = data.Name,
+                Instructions = data.Instructions,
+                Tools = new List<Tool>(),
+                Model = data.Model,
+                Client = client
+            }).ToList();
+            return output;
         }
 
         public static async Task<Assistant> Create(Client client, string name, string model, string instructions = null)
         {
+            var url = "https://api.openai.com/v1/assistants";
+            var headers = new Dictionary<string, string>
+            {
+                { "Authorization", "Bearer " + client.ApiKey },
+                { "OpenAI-Beta", "assistants=v2" }
+            };
+            var body = JsonConvert.SerializeObject(new
+            {
+                name = name,
+                model = model,
+                instructions = instructions
+            });
+
+            var response = await HttpRequestHandler.SendPostRequest(url, headers, body);
+            var assistantResponse = JsonConvert.DeserializeObject<AssistantResponse>(response);
+            
             var assistant = new Assistant
             {
-                Name = name,
-                Model = model,
-                Instructions = instructions,
+                Id = assistantResponse.Id,
+                Name = assistantResponse.Name,
+                Instructions = assistantResponse.Instructions,
+                Model = assistantResponse.Model,
+                Tools = new List<Tool>(),
                 Client = client
             };
+            
 
-            return await assistant.SaveToServer();
+            return assistant;
         }
-        
         public static async Task Delete(Client client, string assistantId)
         {
             var url = "https://api.openai.com/v1/assistants/" + assistantId;
@@ -110,33 +110,6 @@ namespace ColonyCopilot.OpenAI.Assistants
                 return existingAssistant;
             }
             return await Create(client, name, model, instructions);
-        }
-
-        private async Task<Assistant> SaveToServer()
-        {
-            var url = "https://api.openai.com/v1/assistants";
-            var headers = new Dictionary<string, string>
-            {
-                { "Authorization", "Bearer " + Client.ApiKey },
-                { "OpenAI-Beta", "assistants=v2" }
-            };
-            var body = JsonConvert.SerializeObject(new
-            {
-                name = Name,
-                model = Model,
-                instructions = Instructions
-            });
-
-            var response = await HttpRequestHandler.SendPostRequest(url, headers, body);
-            var responseObject = JsonConvert.DeserializeObject<ResponseObject>(response.ToString());
-            
-            Id = responseObject.Id;
-            Name = responseObject.Name;
-            Instructions = responseObject.Instructions;
-            Model = responseObject.Model;
-            Tools = new List<Tool>();
-
-            return this;
         }
     }
 }
