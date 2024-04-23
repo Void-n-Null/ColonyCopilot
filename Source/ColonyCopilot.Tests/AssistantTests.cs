@@ -46,23 +46,57 @@ namespace ColonyCopilot.Tests
 
 
         [Test]
-        public async Task ThreadCreate_ReturnsThreadWithCorrectProperties()
+        public async Task AssistantRetrieveOrCreate_ReturnsExistingAssistant()
         {
-            // Arrange
+            // Create an assistant
             var client = new Client(StaticConst.APIKey);
-            var assistant =
-                await Assistant.Create(client, "Test Assistant", "gpt-4-turbo", "You are a helpful assistant");
+            var name = "Test Assistant";
+            var model = "gpt-4-turbo";
+            var instructions = "You are a helpful assistant.";
+            var assistant = await Assistant.Create(client, name, model, instructions);
 
-            // Act
-            var thread = await Thread.Create(assistant);
-
-            // Assert
-
-            Assert.That(thread.Id, Is.Not.Null);
-            Assert.That(thread.Id, Contains.Substring("thread_"));
-            Assert.That(thread.Assistant, Is.SameAs(assistant));
+            //Act
+            var retrievedAssistant = await Assistant.RetrieveOrCreate(client, name, model, instructions);
             
-            // Add more test methods here
+            //Assert
+            Assert.That(retrievedAssistant.Id, Is.EqualTo(assistant.Id));
+            Assert.That(retrievedAssistant.Name, Is.EqualTo(assistant.Name));
+            Assert.That(retrievedAssistant.Model, Is.EqualTo(assistant.Model));
+            Assert.That(retrievedAssistant.Instructions, Is.EqualTo(assistant.Instructions));
+            Assert.That(retrievedAssistant.Client, Is.SameAs(assistant.Client));
+        }
+        
+        [Test]
+        public async Task AssistantRetrieveOrCreate_ReturnsNewAssistant()
+        {
+            // Create an assistant
+            var client = new Client(StaticConst.APIKey);
+            //Randomize name
+            var name = Guid.NewGuid().ToString();
+            var model = "gpt-4-turbo";
+            var instructions = "You are a helpful assistant.";
+
+            //Act
+            var createdAssistant = await Assistant.RetrieveOrCreate(client, name, model, instructions);
+            
+            //Assert
+            Assert.That(createdAssistant.Id, Is.Not.Null);
+            Assert.That(createdAssistant.Name, Is.EqualTo(name));
+            Assert.That(createdAssistant.Model, Is.EqualTo(model));
+            Assert.That(createdAssistant.Instructions, Is.EqualTo(instructions));
+            Assert.That(createdAssistant.Client, Is.SameAs(client));
+        }
+        
+        [Test]
+        public async Task AssistantDeleteAll_DeletesAllAssistants()
+        {
+            var client = new Client(StaticConst.APIKey);
+            //Act
+            await Assistant.DeleteAll(client);
+            
+            //Assert
+            var assistants = await Assistant.RetrieveAll(client);
+            Assert.That(assistants.Count, Is.EqualTo(0));
         }
     }
 }

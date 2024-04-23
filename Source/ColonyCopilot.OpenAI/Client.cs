@@ -4,7 +4,7 @@ namespace ColonyCopilot.OpenAI
 {
     public class Client
     {
-        public string ApiKey;
+        public readonly string ApiKey;
         
         public Client(string apiKey)
         {
