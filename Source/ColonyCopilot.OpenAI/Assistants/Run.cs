@@ -68,6 +68,12 @@ namespace ColonyCopilot.OpenAI.Assistants
             run.Thread = thread;
             return run;
         }
+        
+        public async Task Cancel()
+        {
+            var url = $"{Endpoints.Threads}/{Thread.Id}/runs/{Id}/cancel";
+            await HttpRequestHandler.SendPostRequest(url, Thread.Assistant.Client.DefaultHeaders);
+        }
 
         public abstract class RunError
         {

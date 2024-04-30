@@ -14,7 +14,7 @@ namespace ColonyCopilot.Rimworld;
 public static class PawnFunctions
 {
     private static Game game => CcpGameManager.Instance.Game;
-    
+
     [AIFunction("CreatePerson", "Creates a person.")]
     public static string CreateColonist(
         [AIParameter("The name of the person")] string name,
@@ -26,10 +26,14 @@ public static class PawnFunctions
         GenPlace.TryPlaceThing(pawn, game.CurrentMap.Center, game.CurrentMap, ThingPlaceMode.Near);
         return $"[SUCCESS] Created {gender} person named {name}";
     }
-    
-    [AIFunction("RequestMine","Request that your pawns mine a specific ore.")]
+
+    [AIFunction("RequestMine", "Request that your pawns mine a specific ore.")]
     public static string RequestMineMaterial([AIParameter("The type of ore you want to mine")] OreChoice ore)
     {
+        if (CcpGameManager.Instance.Context == null)
+        {
+            CcpGameManager.Instance.UpdateContext();
+        }
         var oreTiles = CcpGameManager.Instance.Context.Tracker.GetOre(ore);
         if (oreTiles.Count == 0)
         {
@@ -51,7 +55,7 @@ public static class PawnFunctions
             DesignationQueue.AddDesignation(typeof(Designator_MineVein), new List<IntVec3> { closestOre.Position });
         return $"[SUCCESS] Requested mining of the nearest vein of {ore} ore.";
     }
-    
+
 
     [AIFunction("BuildRoom", "Creates a Blueprint on the map for a room. Colonists will use this blueprint to construct a room.")]
     public static string BuildRoom(
@@ -61,12 +65,17 @@ public static class PawnFunctions
         [AIParameter("The type of room you want to build.")] RoomType roomType
         )
     {
-        
+
         var preset = roomType.GetPreset();
         bool requiresMaterials = preset.NeedsWalls || preset.NeedsFloor;
         if (requiresMaterials && roomType != RoomType.Storage)
         {
-            var count = game.CurrentMap.resourceCounter.GetCount(material.GetThingDef());
+            var def = material.GetThingDef();
+            if (def == null)
+            {
+                return $"[FAIL] Could not find a valid thing def for {material}.";
+            }
+            var count = game.CurrentMap.resourceCounter.GetCount(def);
             bool hasStorage = CcpGameManager.Instance.Rooms.Exists(room => room.RoomType == RoomType.Storage);
             if (!hasStorage)
             {
@@ -77,7 +86,7 @@ public static class PawnFunctions
                 return $"[FAIL] You do not have any {material} to build with.";
             }
         }
-        
+
         var reccomendedSize = $"The recommended size for a {roomType.ToString()} is {preset.RecomendedSize}.";
         if (size <= 0)
         {
@@ -89,7 +98,7 @@ public static class PawnFunctions
             return $"[FAIL] {size} is too large of a room size. The maximum room size is 11." + reccomendedSize;
         }
 
-        
+
         if (preset.MinimumCellsRequired > size * size)
         {
             float requiredSize = Mathf.Sqrt(preset.MinimumCellsRequired) + 1;
@@ -101,12 +110,13 @@ public static class PawnFunctions
         try
         {
             roomPlaced = AttemptCreatePlaceAndApplyRoom(name, size, material, roomType);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             return $"[FAIL] Error placing room: {e.Message}";
         }
 
-        
+
         if (roomPlaced)
         {
             return $"[SUCCESS] Created room {name} of size {size} and material {material}. It is a room of type {roomType}.";
@@ -119,7 +129,7 @@ public static class PawnFunctions
     {
         for (int i = 0; i < MaxBuildRoomAttempts; i++)
         {
-            var randomPosition = CellFinder.RandomNotEdgeCell(size+1, game.CurrentMap);
+            var randomPosition = CellFinder.RandomNotEdgeCell(size + 1, game.CurrentMap);
             foreach (var cornerPos in CellUtil.CornersFromSize(randomPosition, size))
             {
                 CCPRoom room;
@@ -130,30 +140,33 @@ public static class PawnFunctions
                     {
                         RoomType = roomType
                     };
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     throw new Exception($"Error creating room to be placed: {e}");
                 }
                 try
                 {
                     //Validate
-                    if (!room.IsValid(game.CurrentMap)) continue; 
-                } catch (Exception e)
+                    if (!room.IsValid(game.CurrentMap)) continue;
+                }
+                catch (Exception e)
                 {
                     throw new Exception($"Error checking if room is valid: {e}");
                 }
-                
-                
+
+
                 try
                 {
                     //Place
                     room.Name = name;
                     room.PlaceRoom(game.CurrentMap, material.GetThingDef(), material.GetTerrainDef());
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     throw new Exception($"Error using try place room: {e}");
                 }
-                
+
                 try
                 {
                     //Apply

@@ -63,7 +63,9 @@ public class SpeechGenerator : MonoBehaviour
 
     public async Task<AudioClip> GenerateAudioClip(string text, Voice voice)
     {
-        
+        //Make sure text is valid by converting it from bytes to unicode, and then removing any invalid characters
+        text = System.Text.Encoding.UTF8.GetString(System.Text.Encoding.Convert(System.Text.Encoding.Unicode, System.Text.Encoding.UTF8, System.Text.Encoding.Unicode.GetBytes(text)));
+        text = System.Text.RegularExpressions.Regex.Replace(text, @"[^\u0000-\u007F]+", string.Empty);
         var data = new Dictionary<string, string>
         {
             {"model", "tts-1"},
@@ -97,12 +99,20 @@ public class SpeechGenerator : MonoBehaviour
 
             if (request.isHttpError || request.isNetworkError)
             {
-                CLog.Error("Audio download failed: " + request.downloadHandler.text);
                 throw new Exception("Audio download failed: " + request.error);
             }
 
-            AudioClip audioClip = DownloadHandlerAudioClip.GetContent(request);
-            return audioClip;
+            try
+            {
+                AudioClip audioClip = DownloadHandlerAudioClip.GetContent(request);
+                return audioClip;
+            }
+            catch (Exception)
+            {
+                CLog.Error("Response from Open AI was not audio: " + request.downloadHandler.text);
+                throw;
+            }
+
         }
     }
     

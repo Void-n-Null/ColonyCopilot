@@ -7,28 +7,24 @@ namespace ColonyCopilot.Rimworld;
 /// The Colony Copilot Overlay.
 /// This class is responsible for rendering the UI elements of the mod.
 /// </summary>
-public static class CcpOverlay
+
+[StaticConstructorOnStartup]
+public class CcpOverlay
 {
+    static CcpOverlay()
+    {
+        SpinnerImage = ContentFinder<Texture2D>.Get("Spinner");
+    }
+    
     //Universal Screen Width and Height
     private static int ScreenWidth => UI.screenWidth;
     private static int ScreenHeight => UI.screenHeight;
     
     //Spinner
-    private static Texture2D? _spinnerImage;
+    private static readonly Texture2D SpinnerImage;
     private static float _spinnerRotation;
     public const float SpinnerSpeed = 180f;
     public static float SpinnerSize => UIUtil.RelativeWidth(66f);
-    public static Texture2D? SpinnerTexture
-    {
-        get
-        {
-            if (_spinnerImage == null)
-            {
-                _spinnerImage = ContentFinder<Texture2D>.Get("Spinner");
-            }
-            return _spinnerImage;
-        }
-    }
     
     //Show UI
     private static bool _showUI = true;
@@ -137,15 +133,25 @@ public static class CcpOverlay
     /// This spinner is displayed when the AI agent is processing a request.
     /// The spinner rotates at a constant speed;
     /// </summary>
-    public static void RenderSpinner()
+    private static void RenderSpinner()
     {
+        var running = false;
+
+        try
+        {
+            running = CcpGameManager.Instance.Agent.IsRunning;
+        } catch (Exception e)
+        {
+            Log.Error("Error getting agent running status: " + e);
+            return;
+        }
         //Only render the spinner if the agent is running
-        if (!CcpGameManager.Instance.Agent.IsRunning) return;
-        
-        _spinnerRotation += SpinnerSpeed * Time.deltaTime;
-        float size = UIUtil.RelativeWidth(SpinnerSize);
-        _spinnerRotation %= 360;
-        var rect = new Rect(SpeechPanelX + SpeechPanelWidth / 2 - (SpinnerSize / 2), SpeechPanelY + SpeechPanelHeight / 2 - (SpinnerSize / 2), size, size);
-        Widgets.DrawTextureFitted(rect, SpinnerTexture, 1f, new Vector2(1, 1), new Rect(0, 0, 1, 1), _spinnerRotation);
+        if (running)
+        {
+            _spinnerRotation += SpinnerSpeed * Time.deltaTime;
+            _spinnerRotation %= 360;
+            var rect = new Rect(SpeechPanelX + SpeechPanelWidth / 2 - (SpinnerSize / 2), SpeechPanelY + SpeechPanelHeight / 2 - (SpinnerSize / 2), SpinnerSize, SpinnerSize);
+            Widgets.DrawTextureFitted(rect, SpinnerImage, 1f, new Vector2(1, 1), new Rect(0, 0, 1, 1), _spinnerRotation);
+        } 
     }
 }

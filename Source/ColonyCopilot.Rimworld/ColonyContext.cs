@@ -12,40 +12,45 @@ namespace ColonyCopilot.Rimworld;
 /// </summary>
 public class ColonyContext
 {
-    public Tracker? Tracker { get; set; } = null;
-    public List<Pawn>? Colonists { get; set; } = null;
-    public ResourceCounter? ResourceCounter { get; set; } = null;
+    public Tracker Tracker { get; set; }
+    public List<Pawn> Colonists { get; set; }
+    public ResourceCounter ResourceCounter { get; set; }
     private Map _map = null!;
-    
-    
+
+
     public ColonyContext(Game game)
     {
-        Update(game.CurrentMap);
+        _map = game.CurrentMap ?? throw new Exception("Current Map is null");
+        Tracker = new Tracker(_map) ?? throw new Exception("Tracker is null");
+        var allPawns = _map.mapPawns.AllPawns ?? throw new Exception("All Pawns list is null");
+        Colonists = allPawns.Where(pawn => pawn.IsColonist).ToList();
+        ResourceCounter = _map.resourceCounter ?? throw new Exception("Resource Counter is null");
+        CLog.Message("Colony Context Created");
+        LogContext();
     }
     
+    public static ColonyContext? Create()
+    {
+        return default;
+    }
+
+    private void LogContext()
+    {
+        CLog.Message(ToString());
+    }
+
     public void Update(Map map)
     {
         _map = map;
-        try
-        {
-            if (Tracker == null)
-            {
-                Tracker = new Tracker(map);
-            } else
-            {
-                Tracker.Update(map);
-            }
-            var allPawns = map.mapPawns.AllPawns ?? throw new Exception("All Pawns list is null");
-            Colonists = allPawns.Where(pawn => pawn.IsColonist).ToList();
-            ResourceCounter = map.resourceCounter ?? throw new Exception("Resource Counter is null");
-            
-        } catch (Exception e)
-        {
-            CLog.Error("Error Setting Colony Context: " + e);
-        }
+        Tracker.Update(_map);
+        var allPawns = _map.mapPawns.AllPawns ?? throw new Exception("All Pawns list is null");
+        Colonists = allPawns.Where(pawn => pawn.IsColonist).ToList();
+        ResourceCounter = _map.resourceCounter ?? throw new Exception("Resource Counter is null");
+        CLog.Message("Colony Context Updated");
+        LogContext();
     }
-    
-    
+
+
     /// <summary>
     /// The crux of the colony context. Convert the data into a formatted string.
     /// </summary>
@@ -54,16 +59,16 @@ public class ColonyContext
     {
         //Create a string builder. It's gonna be a long ride.
         var sb = new StringBuilder();
-        
-        
+
+
         AddColonistOverview(sb);
         AddIndividuals(sb);
         AddMineables(sb);
         AddResources(sb);
-        
+
         return sb.ToString();
     }
-    
+
     private void AddColonyOverview(StringBuilder sb)
     {
         var biome = _map.Biome.defName;
@@ -76,7 +81,7 @@ public class ColonyContext
         sb.Append($"Temperature: {temperature}C\n");
         sb.Append($"Time: {time}\n");
     }
-    
+
     private void AddColonistOverview(StringBuilder sb)
     {
         var totalColonistsInColony = Colonists.Count;
@@ -101,7 +106,7 @@ public class ColonyContext
             sb.Append("- Mood: " + pawn.needs.mood.MoodString + "\n");
             sb.Append("- Health: " + pawn.health.summaryHealth.SummaryHealthPercent * 100 + "% \n");
             sb.Append("- Rest: " + pawn.needs.rest.CurLevelPercentage * 100 + "% \n");
-            sb.Append("- Current Activity: " +  pawn.GetJobReport() + "\n");
+            sb.Append("- Current Activity: " + pawn.GetJobReport() + "\n");
         }
     }
 
@@ -120,7 +125,7 @@ public class ColonyContext
             sb.Append($"{mineable.Key}: {mineable.Value.Count}\n");
         }
     }
-    
+
     private void AddResources(StringBuilder sb)
     {
         if (ResourceCounter.AllCountedAmounts.Count <= 0)
@@ -135,9 +140,9 @@ public class ColonyContext
                 continue;
             sb.Append($"{resource.Key}: {resource.Value}\n");
         }
-        
+
     }
-    
+
     public void AddExistingRooms(StringBuilder sb)
     {
         if (CcpGameManager.Instance.Rooms.Count == 0)
