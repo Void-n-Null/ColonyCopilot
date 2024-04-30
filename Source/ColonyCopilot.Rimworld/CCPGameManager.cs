@@ -12,6 +12,7 @@ namespace ColonyCopilot.Rimworld;
 /// </summary>
 public class CcpGameManager : GameComponent
 {
+    public static bool DebugMode = true;
     /// <summary>
     /// Singleton instance of the game manager.
     /// </summary>
@@ -21,33 +22,38 @@ public class CcpGameManager : GameComponent
     /// The game object.
     /// </summary>
     public Game Game { get; }
-    
+
     /// <summary>
     /// The list of functions that the AI agent can use.
     /// </summary>
     public List<AIFunction> Functions { get; private set; }
-    
+
     /// <summary>
     /// The AI agent that will be used to generate responses.
     /// </summary>
-    public ColonyAgent Agent { get; private set; } = null!;
-
+    public ColonyAgent Agent { get; private set; }
+    
     /// <summary>
     /// The context of the colony.
     /// </summary>
-    public ColonyContext Context { get; private set; }
-    
+    public ColonyContext Context;
+
     /// <summary>
     /// The list of rooms in the colony.
     /// </summary>
     public List<CCPRoom> Rooms { get; set; }
 
+    /// <summary>
+    /// Main constructor for the game manager.
+    /// </summary>
+    /// <param name="game"> The game passed in from the GameComponent. </param>
     public CcpGameManager(Game game)
     {
-        Game = game ?? throw new ArgumentNullException(nameof(game));
+        Game = game;
         Instance = this;
         Functions = new List<AIFunction>();
         Rooms = new List<CCPRoom>();
+        CLog.Message("RimworldContextAI".Translate());
         try
         {
             Functions = FunctionManager.FindFunctions();
@@ -57,7 +63,7 @@ public class CcpGameManager : GameComponent
             CLog.Error("Error Loading Functions: " + e);
             return;
         }
-
+        CLog.Debug("Loaded a total of " + Functions.Count + " functions");
         CLog.Message($"Found {Functions.Count} functions");
         foreach (var function in Functions)
         {
@@ -66,12 +72,24 @@ public class CcpGameManager : GameComponent
         }
     }
 
+    public static CcpGameManager CreateInstance(Game game)
+    {
+        return new CcpGameManager(game);
+    }
+
     public override async void StartedNewGame()
     {
+        try
+        {
+            Context = new ColonyContext(Game);
+        } catch (Exception e)
+        {
+            CLog.Error("Error creating context: " + e);
+            throw;
+        }
+        
         CLog.Message("Colony Copilot Loaded");
-        Context = new ColonyContext(Game);
-        CLog.Message("Initial Colony Context");
-        CLog.Message(Context.ToString());
+        UpdateContext();
         await InitializeAgent();
         CLog.Message("Colony Agent Successfully Initialized");
 
@@ -92,7 +110,7 @@ public class CcpGameManager : GameComponent
             CLog.Message(room);
         }
         CLog.Message("Test Complete. Room count: " + Rooms.Count);
-        
+
     }
 
     public override void GameComponentTick()
@@ -113,7 +131,8 @@ public class CcpGameManager : GameComponent
     private async Task TalkToAgent(string message)
     {
         await Agent.SendUserMessage(message);
-        await Agent.GetAndSpeakResponse();
+        var instructions = $"Here is some context on the current colony: {Context}";
+        await Agent.GetAndSpeakResponse(instructions);
     }
 
     public async Task AgentAction()

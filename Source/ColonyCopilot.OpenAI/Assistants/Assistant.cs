@@ -26,14 +26,14 @@ namespace ColonyCopilot.OpenAI.Assistants
         public string Instructions { get; private set; }
         public string Model { get; private set; }
         public Client Client { get; private set; }
-        
+
         public List<AIFunction> Functions { get; private set; }
 
         /// <summary>
         /// No-args constructor for JSON deserialization.
         /// </summary>
         public Assistant() { }
-        
+
         /// <summary>
         /// Creates a new assistant with the specified parameters.
         /// </summary>
@@ -53,7 +53,7 @@ namespace ColonyCopilot.OpenAI.Assistants
             }).ToList();
             return output;
         }
-        
+
         /// <summary>
         /// Requests an update to the model of the assistant.
         /// </summary>
@@ -66,7 +66,7 @@ namespace ColonyCopilot.OpenAI.Assistants
             }));
             Model = newModel;
         }
-        
+
         /// <summary>
         /// Updates any data of the assistant.
         /// </summary>
@@ -93,7 +93,7 @@ namespace ColonyCopilot.OpenAI.Assistants
             {
                 functions = new List<AIFunction>();
             }
-            
+
             var toolStrings = new List<string>();
             foreach (var function in functions)
             {
@@ -101,7 +101,7 @@ namespace ColonyCopilot.OpenAI.Assistants
             }
 
             var toolString = "[]";
-            
+
             if (toolStrings.Count != 0)
             {
                 //Join the tools with a comma
@@ -116,14 +116,14 @@ namespace ColonyCopilot.OpenAI.Assistants
                 instructions,
                 tools
             });
-            
+
             Console.WriteLine(body);
-            
-            
+
+
 
             var response = await HttpRequestHandler.SendPostRequest(Endpoints.Assistants, client.DefaultHeaders, body);
             var assistantResponse = JsonConvert.DeserializeObject<AssistantResponse>(response);
-            
+
             var assistant = new Assistant
             {
                 Id = assistantResponse.Id,
@@ -135,11 +135,11 @@ namespace ColonyCopilot.OpenAI.Assistants
             };
 
             client.OnModelChanged += assistant.RequestUpdateModel;
-            
+
             return assistant;
         }
 
-        
+
         /// <summary>
         /// Deletes the assistant with the specified ID.
         /// </summary>
@@ -149,7 +149,7 @@ namespace ColonyCopilot.OpenAI.Assistants
         {
             await HttpRequestHandler.SendDeleteRequest(Endpoints.Assistants + $"/{assistantId}", client.DefaultHeaders);
         }
-        
+
         /// <summary>
         /// Deletes all assistants on the client.
         /// </summary>
@@ -166,10 +166,10 @@ namespace ColonyCopilot.OpenAI.Assistants
                 }
                 assistants = await RetrieveAll(client);
                 pages++;
-                Task.Delay(500);
+                await Task.Delay(500);
             }
         }
-        
+
         /// <summary>
         /// Retrieves an assistant with the specified name, or creates one if it doesn't exist.
         /// </summary>

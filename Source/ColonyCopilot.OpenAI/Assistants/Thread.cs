@@ -19,28 +19,46 @@ namespace ColonyCopilot.OpenAI.Assistants
         public string Id { get; private set; }
         public Assistant Assistant { get; private set; }
 
-        private float _defaultTimeout = 10f;
-        
+        private float _timeoutLimit = 10f;
+
         public delegate void RanToolCallDelegate(string function);
         public event RanToolCallDelegate RanToolCall;
         public bool IsRunning { get; private set; }
+        
+        private Run CurrentRun { get; set; }
+
         /// <summary>
         /// Creates a new thread with the specified assistant.
         /// </summary>
         /// <param name="assistant"> The assistant to use for the thread. </param>
-        /// <param name="functionAssembly"> Optional. The assembly containing the functions to use. </param>
+        /// <param name="timeout"> Optional. The timeout for the thread. </param>
         /// <returns> The created thread. </returns>
         public static async Task<Thread> Create(Assistant assistant, float timeout = 10f)
         {
-            var response = await HttpRequestHandler.SendPostRequest("https://api.openai.com/v1/threads", assistant.Client.DefaultHeaders);
+            var response = await HttpRequestHandler.SendPostRequest(Endpoints.Threads, assistant.Client.DefaultHeaders);
             var responseData = JsonConvert.DeserializeObject<ThreadResponse>(response);
             var thread = new Thread
             {
                 Id = responseData.Id,
                 Assistant = assistant,
-                _defaultTimeout = timeout
+                _timeoutLimit = timeout
             };
             return thread;
+        }
+
+        public static async Task Delete(Client client, string id)
+        {
+            await HttpRequestHandler.SendDeleteRequest($"{Endpoints.Threads}/{id}", client.DefaultHeaders);
+        }
+        
+        public async Task CancelRun()
+        {
+            VerifySelf();
+            if (CurrentRun != null)
+            {
+                await CurrentRun.Cancel();
+            }
+            IsRunning = false;
         }
 
         private void VerifySelf()
@@ -64,13 +82,13 @@ namespace ColonyCopilot.OpenAI.Assistants
             {
                 throw new Exception("Thread not initialized. DefaultHeaders is null.");
             }
-            
+
             if (Assistant.Client.DefaultHeaders.Count == 0)
             {
                 throw new Exception("Thread not initialized. DefaultHeaders is empty.");
             }
         }
-        
+
         /// <summary>
         /// Adds a message to the thread.
         /// </summary>
@@ -83,14 +101,14 @@ namespace ColonyCopilot.OpenAI.Assistants
             {
                 throw new ArgumentNullException(nameof(message));
             }
-            
+
             var body = JsonConvert.SerializeObject(new
             {
                 role = message.Role.ToString().ToLower(),
                 content = message.Content
             });
-            
-            var response = await HttpRequestHandler.SendPostRequest($"https://api.openai.com/v1/threads/{Id}/messages",
+
+            var response = await HttpRequestHandler.SendPostRequest($"{Endpoints.Threads}/{Id}/messages",
                                                                             Assistant.Client.DefaultHeaders,
                                                                             body);
 
@@ -98,7 +116,8 @@ namespace ColonyCopilot.OpenAI.Assistants
             try
             {
                 responseObject = JsonConvert.DeserializeObject<MessageResponse>(response);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 throw new JsonSerializationException("Error deserializing AddMessage response: " + e);
             }
@@ -108,11 +127,12 @@ namespace ColonyCopilot.OpenAI.Assistants
             {
                 bool hasRole = Enum.TryParse(responseObject.Role, true, out Message.RoleType parsedRole);
                 role = hasRole ? parsedRole : message.Role;
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 throw new InvalidDataException("Error parsing role: " + e);
             }
-            
+
             return new Message
             {
                 Role = role,
@@ -134,8 +154,8 @@ namespace ColonyCopilot.OpenAI.Assistants
             {
                 queryParameters.Add("before", cutoffMessageID);
             }
-    
-            var response = await HttpRequestHandler.SendGetRequest($"https://api.openai.com/v1/threads/{Id}/messages",
+
+            var response = await HttpRequestHandler.SendGetRequest($"{Endpoints.Threads}/{Id}/messages",
                                                                             Assistant.Client.DefaultHeaders,
                                                                             queryParameters);
             var responseObject = JsonConvert.DeserializeObject<MessageResponseList>(response);
@@ -152,7 +172,7 @@ namespace ColonyCopilot.OpenAI.Assistants
             }
             return messages;
         }
-        
+
         /// <summary>
         /// Start a run on the thread.
         /// </summary>
@@ -163,7 +183,7 @@ namespace ColonyCopilot.OpenAI.Assistants
             VerifySelf();
             return await Run.Create(Assistant, this, instructions);
         }
-        
+
         private async Task<Message> GetLatestMessage()
         {
             var messages = await RetrieveMessages();
@@ -173,7 +193,7 @@ namespace ColonyCopilot.OpenAI.Assistants
             }
             return messages[0];
         }
-        
+
         /// <summary>
         /// Create a run, execute it, and return the first message it created.
         /// It also handles tool calls! It will execute code in the tool calls and submit the outputs.
@@ -183,29 +203,35 @@ namespace ColonyCopilot.OpenAI.Assistants
         /// <exception cref="TimeoutException"> Thrown if the execution times out. </exception>
         public async Task<ExecutionResult> GetResponse(string instructions = "")
         {
+            //Verify that the thread is set up correctly
             VerifySelf();
+            
+            //Initial Setup for run and timeout
             float time = 0f;
             var latestMessageBeforeRun = await GetLatestMessage();
-            var run = await StartRun(instructions);
+            CurrentRun = await StartRun(instructions);
+            
+            //Main loop
             int stepsTaken = 0;
-            var toolOutputs  = new List<Dictionary<string, string>>();
+            var toolOutputs = new List<Dictionary<string, string>>();
+            //This variable tells other methods that the thread is currently running.
             IsRunning = true;
-            while (run.Status != "completed")
+            while (CurrentRun.Status != "completed" && IsRunning)
             {
                 var inputOutputDict = new Dictionary<string, string>();
                 stepsTaken++;
-                if (run.Status == "failed")
+                if (CurrentRun.Status == "failed")
                 {
                     IsRunning = false;
-                    throw new Exception("Run failed. Error: " + $"{run.LastError.Code} - {run.LastError.Message}");
+                    throw new Exception("Run failed. Error: " + $"{CurrentRun.LastError.Code} - {CurrentRun.LastError.Message}");
                 }
 
-                if (run.Status == "requires_action")
+                if (CurrentRun.Status == "requires_action")
                 {
-                    var steps = await run.RetrieveSteps();
+                    var steps = await CurrentRun.RetrieveSteps();
                     var mostRecentStep = steps[0];
                     var outputs = ExecuteToolCalls(mostRecentStep, out var functionStrings);
-                    
+
                     for (var i = 0; i < outputs.Count; i++)
                     {
                         var output = outputs.ElementAt(i);
@@ -213,17 +239,17 @@ namespace ColonyCopilot.OpenAI.Assistants
                         inputOutputDict.Add(functionString, output.Value);
                     }
                     toolOutputs.Add(inputOutputDict);
-                    run = await SubmitToolCalls(run, outputs);
+                    CurrentRun = await SubmitToolCalls(CurrentRun, outputs);
                     time = 0f;
                 }
                 await Task.Delay(500);
                 time += 0.5f;
-                if (time >= _defaultTimeout)
+                if (time >= _timeoutLimit)
                 {
                     IsRunning = false;
-                    throw new TimeoutException($"Run timed out. Last status: {run.Status} after {stepsTaken} steps.");
+                    throw new TimeoutException($"Run timed out. Last status: {CurrentRun.Status} after {stepsTaken} steps.");
                 }
-                run = await run.Retrieve();
+                CurrentRun = await CurrentRun.Retrieve();
             }
 
             List<Message> newMessages;
@@ -235,7 +261,7 @@ namespace ColonyCopilot.OpenAI.Assistants
             {
                 newMessages = await RetrieveMessages();
             }
-            
+
             var response = newMessages[0].Content;
             byte[] nonUnicodeBytes = System.Text.Encoding.Default.GetBytes(response);
             string finalizedContent = System.Text.Encoding.UTF8.GetString(nonUnicodeBytes);
@@ -243,13 +269,13 @@ namespace ColonyCopilot.OpenAI.Assistants
             return new ExecutionResult(finalizedContent, toolOutputs.Count, toolOutputs);
         }
 
-        public Dictionary<string,string> ExecuteToolCalls(RunStep runStep, out List<string> functionStrings)
+        private Dictionary<string, string> ExecuteToolCalls(RunStep runStep, out List<string> functionStrings)
         {
             var dict = new Dictionary<string, string>();
             var functionObjects = runStep.StepDetails.ToolCalls;
             functionStrings = new List<string>();
             var functions = Assistant.Functions;
-            
+
             foreach (var functionObject in functionObjects)
             {
                 //Setup
@@ -261,22 +287,22 @@ namespace ColonyCopilot.OpenAI.Assistants
                 RanToolCall?.Invoke(functionString);
                 var result = FunctionManager.RunFunction(function, parameters);
 
-                
+
                 //Add to dictionary
                 dict.Add(functionObject.Id, result);
             }
             return dict;
         }
-        
-        public async Task<Run> SubmitToolCalls(Run run, Dictionary<string,string> IDsAndOutputs)
+
+        private async Task<Run> SubmitToolCalls(Run run, Dictionary<string, string> callsAndOutputs)
         {
             //Convert the dictionary to a list of objects
-            var toolOutputs = IDsAndOutputs.Select(pair => new
+            var toolOutputs = callsAndOutputs.Select(pair => new
             {
                 tool_call_id = pair.Key,
                 output = pair.Value
             }).ToList();
-            
+
             var body = JsonConvert.SerializeObject(new
             {
                 tool_outputs = toolOutputs
