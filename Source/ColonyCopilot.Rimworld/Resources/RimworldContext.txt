@@ -1,0 +1,59 @@
+<Rimworld>
+Rimworld is a colony management game.
+In Rimworld, there are a few different things you need to pay attention to.
+First, you need to make sure your colonists are happy. This means you need to make sure they have food, shelter, and other basic needs.
+Second, you need to make sure your colonists are safe. This means you need to build defenses and make sure your colonists are well-armed.
+Finally, you need to make sure your colony is growing. This means you need to build new structures, research new technologies, and recruit new colonists.
+    <Map>
+    The map is where your colony is located. The map is divided into tiles, each of which represents a different area of the map.
+    A map is usually around 250x250 tiles.
+    The map is where you will build your colony, grow crops, mine resources, and defend against enemies.
+    </Map>
+    <Room>
+        A room is a defined area on the map that is enclosed by walls and doors. Rooms can be used for a variety of purposes, such as sleeping, eating, or working. They are good for storage, and can be used to keep your colonists happy.
+        Rooms can also have different temperature levels, which can affect your colonists' mood and health.
+        The maximum recommended size for a room is 11x11 tiles.
+        A bedroom should be between 4x4 and 8x8 tiles.
+        A dining room should be between 6x6 and 12x12 tiles.
+    </Room>
+    <Pawn>
+    A pawn is a living creature in Rimworld. Pawns can be colonists, animals, or enemies.
+    Pawns have a variety of needs, including food, rest, and recreation. Pawns also have skills, which determine how good they are at different tasks.
+    Each pawn only takes up one tile on the map, so you can have a lot of pawns on the map at once.
+    </Pawn>
+    <Colonist>
+    A colonist is a pawn that is part of your colony. Colonists can be assigned to different tasks, such as cooking, cleaning, or researching.
+    Colonists can also be equipped with weapons and armor to defend the colony from enemies.
+    Colonists can also form relationships with each other, which can have both positive and negative effects on the colony.
+    </Colonist>
+    <Animal>
+    An animal is a pawn that is not part of your colony. Animals can be tamed and trained to perform different tasks, such as hauling items or attacking enemies.
+    Animals can also be used for food, clothing, and other resources.
+    Some animals are hostile and will attack your colonists, so it's important to be careful when dealing with them.
+    </Animal>
+    <Enemy>
+    An enemy is a pawn that is hostile to your colony. Enemies can be human, animal, or mechanoid.
+    Enemies will attack your colony and try to destroy your buildings and kill your colonists.
+    You can defend against enemies by building defenses, equipping your colonists with weapons, and training animals to attack enemies.
+    </Enemy>
+    <Building>
+    A building is a structure that you can construct in Rimworld. Buildings can be used for a variety of purposes, such as housing, storage, production, and defense.
+    Buildings can be made out of different materials, such as wood or steel.
+    You can also deconstruct buildings to reclaim the materials used to build them.
+    </Building>
+    <Item>
+    An item is an object that can be used by your colonists. Items can be weapons, armor, food, or resources.
+    Items can be found on the map, traded with other factions, or crafted by your colonists.
+    Items can also deteriorate over time, so it's important to keep them in good condition.
+    </Item>
+    <Food>
+    Food is a resource that your colonists need to survive. Colonists can eat raw food, but they will get more nutrition from cooked food.
+    Food can be grown on farms, hunted from animals, or traded with other factions.
+    Food can also spoil over time, so it's important to store it in a refrigerated area.
+    </Food>
+    <Research>
+    Research is a mechanic in Rimworld that allows you to unlock new technologies and buildings. Research is done at a research bench by a colonist with the research skill.
+    Researching new technologies can give your colony a significant advantage, such as better weapons, armor, or defenses.
+    Researching new technologies also requires resources, so it's important to manage your resources carefully.
+    </Research>
+</Rimworld>

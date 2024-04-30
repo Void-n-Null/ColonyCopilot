@@ -1,70 +1,127 @@
 // Assistant.cs
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using ColonyCopilot.OpenAI.Web;
 using ColonyCopilot.OpenAI;
 using ColonyCopilot.OpenAI.Assistants;
+using ColonyCopilot.OpenAI.Functions;
 using ColonyCopilot.OpenAI.ResponseModels;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ColonyCopilot.OpenAI.Assistants
 {
+    /// <summary>
+    /// Represents an assistant in the OpenAI API.
+    /// Contains methods for creating, retrieving, and deleting assistants.
+    /// </summary>
     public class Assistant
     {
-        [JsonProperty("id")]
         public string Id { get; private set; }
-        [JsonProperty("name")]
         public string Name { get; private set; }
-        [JsonProperty("instructions")]
         public string Instructions { get; private set; }
-        [JsonProperty("tools")]
-        public List<Tool> Tools { get; set; }
-        [JsonProperty("model")]
         public string Model { get; private set; }
         public Client Client { get; private set; }
+        
+        public List<AIFunction> Functions { get; private set; }
 
-        private Assistant() { }
-
+        /// <summary>
+        /// No-args constructor for JSON deserialization.
+        /// </summary>
+        public Assistant() { }
+        
+        /// <summary>
+        /// Creates a new assistant with the specified parameters.
+        /// </summary>
+        /// <param name="client"> The client to use for the request. </param>
+        /// <returns> A list of all assistants found on the client. </returns>
         public static async Task<List<Assistant>> RetrieveAll(Client client)
         {
-            var url = "https://api.openai.com/v1/assistants";
-            var headers = new Dictionary<string, string>
-            {
-                {"Authorization", "Bearer " + client.ApiKey},
-                {"OpenAI-Beta", "assistants=v2"}
-            };
-
-            var response = await HttpRequestHandler.SendGetRequest(url, headers);
+            var response = await HttpRequestHandler.SendGetRequest("https://api.openai.com/v1/assistants", client.DefaultHeaders);
             var assistantList = JsonConvert.DeserializeObject<AssistantResponseList>(response);
             var output = assistantList.Assistants.Select(data => new Assistant
             {
                 Id = data.Id,
                 Name = data.Name,
                 Instructions = data.Instructions,
-                Tools = new List<Tool>(),
                 Model = data.Model,
                 Client = client
             }).ToList();
             return output;
         }
-
-        public static async Task<Assistant> Create(Client client, string name, string model, string instructions = null)
+        
+        /// <summary>
+        /// Requests an update to the model of the assistant.
+        /// </summary>
+        /// <param name="newModel"> The new model to use. </param>
+        public void RequestUpdateModel(string newModel)
         {
-            var url = "https://api.openai.com/v1/assistants";
-            var headers = new Dictionary<string, string>
+            Task.Run(() => Update(Client, Id, new Dictionary<string, object>
             {
-                { "Authorization", "Bearer " + client.ApiKey },
-                { "OpenAI-Beta", "assistants=v2" }
-            };
+                {"model", newModel}
+            }));
+            Model = newModel;
+        }
+        
+        /// <summary>
+        /// Updates any data of the assistant.
+        /// </summary>
+        /// <param name="client"> The client to use for the request. </param>
+        /// <param name="assistantId"> The ID of the assistant to update. </param>
+        /// <param name="data"> The data to change. </param>
+        public static async Task Update(Client client, string assistantId, Dictionary<string, object> data)
+        {
+            var body = JsonConvert.SerializeObject(data);
+            await HttpRequestHandler.SendPostRequest(Endpoints.Assistants + $"/{assistantId}", client.DefaultHeaders, body);
+        }
+
+        /// <summary>
+        /// Creates a new assistant with the specified parameters.
+        /// </summary>
+        /// <param name="client"> The client to use for the request. </param>
+        /// <param name="name"> The name of the assistant. </param>
+        /// <param name="model"> The model to use for the assistant. </param>
+        /// <param name="instructions"> The instructions for the assistant. </param>
+        /// <returns> The created assistant. </returns>
+        public static async Task<Assistant> Create(Client client, string name, string model, string instructions = null, List<AIFunction> functions = null)
+        {
+            if (functions == null)
+            {
+                functions = new List<AIFunction>();
+            }
+            
+            var toolStrings = new List<string>();
+            foreach (var function in functions)
+            {
+                toolStrings.Add(AIFunction.CreateTool(function));
+            }
+
+            var toolString = "[]";
+            
+            if (toolStrings.Count != 0)
+            {
+                //Join the tools with a comma
+                toolString = toolStrings.Aggregate((current, next) => current + "," + next);
+                toolString = "[" + toolString + "]";
+            }
+            JToken tools = JToken.Parse(toolString);
             var body = JsonConvert.SerializeObject(new
             {
-                name = name,
-                model = model,
-                instructions = instructions
+                name,
+                model,
+                instructions,
+                tools
             });
+            
+            Console.WriteLine(body);
+            
+            
 
-            var response = await HttpRequestHandler.SendPostRequest(url, headers, body);
+            var response = await HttpRequestHandler.SendPostRequest(Endpoints.Assistants, client.DefaultHeaders, body);
             var assistantResponse = JsonConvert.DeserializeObject<AssistantResponse>(response);
             
             var assistant = new Assistant
@@ -73,34 +130,54 @@ namespace ColonyCopilot.OpenAI.Assistants
                 Name = assistantResponse.Name,
                 Instructions = assistantResponse.Instructions,
                 Model = assistantResponse.Model,
-                Tools = new List<Tool>(),
-                Client = client
+                Client = client,
+                Functions = functions
             };
-            
 
+            client.OnModelChanged += assistant.RequestUpdateModel;
+            
             return assistant;
         }
+
+        
+        /// <summary>
+        /// Deletes the assistant with the specified ID.
+        /// </summary>
+        /// <param name="client"> The client to use for the request. </param>
+        /// <param name="assistantId"> The ID of the assistant to delete. </param>
         public static async Task Delete(Client client, string assistantId)
         {
-            var url = "https://api.openai.com/v1/assistants/" + assistantId;
-            var headers = new Dictionary<string, string>
-            {
-                { "Authorization", "Bearer " + client.ApiKey },
-                { "OpenAI-Beta", "assistants=v2" }
-            };
-
-            await HttpRequestHandler.SendDeleteRequest(url, headers);
+            await HttpRequestHandler.SendDeleteRequest(Endpoints.Assistants + $"/{assistantId}", client.DefaultHeaders);
         }
         
+        /// <summary>
+        /// Deletes all assistants on the client.
+        /// </summary>
+        /// <param name="client"> The client to use for the request. </param>
         public static async Task DeleteAll(Client client)
         {
             var assistants = await RetrieveAll(client);
-            foreach (var assistant in assistants)
+            int pages = 0;
+            while (assistants.Count != 0 || pages < 10)
             {
-                await Delete(client, assistant.Id);
+                foreach (var assistant in assistants)
+                {
+                    await Delete(client, assistant.Id);
+                }
+                assistants = await RetrieveAll(client);
+                pages++;
+                Task.Delay(500);
             }
         }
         
+        /// <summary>
+        /// Retrieves an assistant with the specified name, or creates one if it doesn't exist.
+        /// </summary>
+        /// <param name="client"> The client to use for the request. </param>
+        /// <param name="name"> The name of the assistant. </param>
+        /// <param name="model"> The model to use for the assistant. </param>
+        /// <param name="instructions"> The instructions for the assistant. </param>
+        /// <returns></returns>
         public static async Task<Assistant> RetrieveOrCreate(Client client, string name, string model, string instructions = null)
         {
             var existingAssistants = await RetrieveAll(client);

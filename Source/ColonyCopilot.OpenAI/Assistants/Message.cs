@@ -6,11 +6,8 @@ namespace ColonyCopilot.OpenAI.Assistants
 {
     public class Message
     {
-        [JsonProperty("role")]
         public RoleType Role { get; set; }
-        [JsonProperty("content")]
         public string Content { get; set; }
-        [JsonProperty("id")]
         public string Id { get; set; }
         
         public enum RoleType
@@ -19,8 +16,22 @@ namespace ColonyCopilot.OpenAI.Assistants
             Assistant
         }
         
-
+        public static Message User(string content)
+        {
+            return new Message
+            {
+                Role = RoleType.User,
+                Content = content
+            };
+        }
         
-
+        public static Message Assistant(string content)
+        {
+            return new Message
+            {
+                Role = RoleType.Assistant,
+                Content = content
+            };
+        }
     }
 }
