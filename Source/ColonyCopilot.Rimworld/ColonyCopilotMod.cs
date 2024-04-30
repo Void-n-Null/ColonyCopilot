@@ -64,6 +64,7 @@ public class ColonyCopilotMod : Mod
         if (settings.Model != _currentClient.Model && _modelIds.Contains(settings.Model.ToLower()))
         {
             _currentClient.SetModel(settings.Model);
+            CLog.Message("Model changed to " + _currentClient.Model);
         }
         
         listingStandard.End();

@@ -101,8 +101,12 @@ public class CcpGameManager : GameComponent
         DesignationQueue.ExecuteDesignations();
     }
 
-    public static void InitializeAgentTalk(string message)
+    public static void CallAgent(string message)
     {
+        if (string.IsNullOrEmpty(message.Trim()))
+        {
+            return;
+        }
         Task.Run(() => Instance.TalkToAgent(message));
     }
 
