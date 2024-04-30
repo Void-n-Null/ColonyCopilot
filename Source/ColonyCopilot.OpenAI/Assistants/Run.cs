@@ -1,6 +1,5 @@
 // Run.cs
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ColonyCopilot.OpenAI.Web;
@@ -8,13 +7,17 @@ using Newtonsoft.Json;
 
 namespace ColonyCopilot.OpenAI.Assistants
 {
+    /// <summary>
+    /// Represents a run of an assistant.
+    /// Very simple implementation, only includes the properties needed for the Colony Copilot project.
+    /// </summary>
     public class Run
     {
         [JsonProperty("id")]
         public string Id { get; set; }
         
-        [JsonProperty("assistant_id")]
-        public string AssistantId { get; set; }
+        [JsonProperty("assistant_id")] 
+        private string AssistantId { get; set; }
         
         [JsonProperty("status")]
         public string Status { get; set; }
@@ -22,8 +25,9 @@ namespace ColonyCopilot.OpenAI.Assistants
         [JsonProperty("last_error")]
         public RunError LastError { get; set; }
         
+        [JsonIgnore]
         public Thread Thread { get; set; }
-        
+
         public async Task<Run> Retrieve()
         {
             var url = $"https://api.openai.com/v1/threads/{Thread.Id}/runs/{Id}";
@@ -40,31 +44,32 @@ namespace ColonyCopilot.OpenAI.Assistants
             return run;
         }
 
-
-
-        public static async Task<Run> Create(Assistant assistant, Thread thread, string instructions)
+        public async Task<List<RunStep>> RetrieveSteps()
         {
-            var runData = new
+            var url = $"https://api.openai.com/v1/threads/{Thread.Id}/runs/{Id}/steps";
+            var response = await HttpRequestHandler.SendGetRequest(url, Thread.Assistant.Client.DefaultHeaders);
+            var runStepList = JsonConvert.DeserializeObject<RunStepList>(response);
+            return runStepList.Data;
+        }
+
+        public static async Task<Run> Create(Assistant assistant, Thread thread, string instructions = "")
+        {
+            var runValues = new
             {
                 assistant_id = assistant.Id,
                 instructions
             };
+            var body = JsonConvert.SerializeObject(runValues);
 
-            var url = $"https://api.openai.com/v1/threads/{thread.Id}/runs";
-            var headers = new Dictionary<string, string>
-            {
-                { "Authorization", $"Bearer {assistant.Client.ApiKey}" },
-                { "OpenAI-Beta", "assistants=v2" }
-            };
-            var body = JsonConvert.SerializeObject(runData);
-
-            var response = await HttpRequestHandler.SendPostRequest(url, headers, body);
-            var run = JsonConvert.DeserializeObject<Run>(response);
+            var response = await HttpRequestHandler.SendPostRequest($"https://api.openai.com/v1/threads/{thread.Id}/runs",
+                                                                            assistant.Client.DefaultHeaders,
+                                                                            body);
+            var run = JsonConvert.DeserializeObject<Run>(response); 
             run.Thread = thread;
             return run;
         }
 
-        public class RunError
+        public abstract class RunError
         {
             [JsonProperty("code")]
             public string Code;

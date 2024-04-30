@@ -5,3 +5,10 @@ D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.OpenAI\ob
 D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.OpenAI\obj\Debug\ColonyCopilot.OpenAI.csproj.CopyComplete
 D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.OpenAI\obj\Debug\ColonyCopilot.OpenAI.dll
 D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.OpenAI\obj\Debug\ColonyCopilot.OpenAI.pdb
+D:\Games\Rimworld\Rimworld\Mods\ColonyCopilot\Assemblies\ColonyCopilot.OpenAI.dll
+D:\Games\Rimworld\Rimworld\Mods\ColonyCopilot\Assemblies\ColonyCopilot.OpenAI.pdb
+D:\Games\Rimworld\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.OpenAI\obj\Debug\ColonyCopilot.OpenAI.csproj.AssemblyReference.cache
+D:\Games\Rimworld\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.OpenAI\obj\Debug\ColonyCopilot.OpenAI.csproj.CoreCompileInputs.cache
+D:\Games\Rimworld\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.OpenAI\obj\Debug\ColonyCopilot.OpenAI.csproj.CopyComplete
+D:\Games\Rimworld\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.OpenAI\obj\Debug\ColonyCopilot.OpenAI.dll
+D:\Games\Rimworld\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.OpenAI\obj\Debug\ColonyCopilot.OpenAI.pdb

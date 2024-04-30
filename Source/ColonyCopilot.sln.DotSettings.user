@@ -2,6 +2,15 @@
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CGames_005CRimworld_00201_002E5_005CRimworld_005CMods_005CColonyCopilot_005CAssemblies_005CUnity_002ENewtonsoft_002EJson_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CGames_005CRimworld_00201_002E5_005CRimworld_005CRimWorldWin64_005FData_005CManaged_005CAssembly_002DCSharp_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CGames_005CRimworld_00201_002E5_005CRimworld_005CRimWorldWin64_005FData_005CManaged_005CUnityEngine_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CGames_005CRimworld_005CRimworld_005CMods_005C2009463077_005C1_002E4_005CAssemblies_005C0Harmony_002Edll/@EntryIndexedValue">True</s:Boolean>
+	
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=494041d7_002D5e10_002D4f2b_002Da447_002D19ed836b4686/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from &amp;lt;ColonyCopilot.Tests&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;Project Location="D:\Games\Rimworld 1.5\Rimworld\Mods\ColonyCopilot\Source\ColonyCopilot.Tests" Presentation="&amp;lt;ColonyCopilot.Tests&amp;gt;" /&gt;&#xD;
-&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::83494E40-F36C-4410-A799-8AEB5F26484C::.NETFramework,Version=v4.7.2::ColonyCopilot.Tests.ThreadTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::83494E40-F36C-4410-A799-8AEB5F26484C::.NETFramework,Version=v4.7.2::ColonyCopilot.Tests.SystemTests.SystemAssistantCanRespond_ReturnsMessageContent&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::83494E40-F36C-4410-A799-8AEB5F26484C::.NETFramework,Version=v4.7.2::ColonyCopilot.Tests.AssistantTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::83494E40-F36C-4410-A799-8AEB5F26484C::.NETFramework,Version=v4.7.2::ColonyCopilot.Tests.SystemTests.SystemAssistantCanRespondWithSpecificRunInstructions_ReturnsMessageContent&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::83494E40-F36C-4410-A799-8AEB5F26484C::.NETFramework,Version=v4.7.2::ColonyCopilot.Tests.ModelsTests.RetrieveTest&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	</wpf:ResourceDictionary>

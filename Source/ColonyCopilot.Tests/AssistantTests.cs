@@ -94,9 +94,34 @@ namespace ColonyCopilot.Tests
             //Act
             await Assistant.DeleteAll(client);
             
+            
             //Assert
+            await Task.Delay(1000);
             var assistants = await Assistant.RetrieveAll(client);
+            Assert.That(assistants, Is.Not.Null);
+            Assert.That(assistants, Is.InstanceOf<List<Assistant>>());
             Assert.That(assistants.Count, Is.EqualTo(0));
+        }
+        
+        [Test]
+        public async Task AssistantUpdateModel_FromSettingClient()
+        {
+            //Arrange
+            var client = new Client(StaticConst.APIKey);
+            var name = "Test Assistant";
+            var model = "gpt-4-turbo";
+            var instructions = "You are a helpful assistant.";
+            var assistant = await Assistant.Create(client, name, model, instructions);
+            var newModel = "gpt-3.5-turbo-16k";
+            
+            //Act
+            client.SetModel(newModel);
+            Task.Delay(1000);
+            
+            //Assert
+            Assert.That(assistant.Model, Is.EqualTo(newModel));
+            Assert.That(assistant.Client.Model, Is.EqualTo(newModel));
+            Assert.That(assistant.Client, Is.SameAs(client));
         }
     }
 }

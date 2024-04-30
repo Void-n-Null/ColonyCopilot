@@ -60,7 +60,7 @@ namespace ColonyCopilot.OpenAI.Web
         /// <param name="body"> The body of the request. </param>
         /// <returns> The response from the request. </returns>
         /// <exception cref="WebException"> Thrown if the request fails. </exception>
-        public static async Task<string> SendPostRequest(string url, Dictionary<string, string> headers = null, string body = null)
+        public static async Task<string> SendPostRequest(string url, Dictionary<string, string> headers = null, string body = "")
         {
             using (var webClient = new WebClient())
             {

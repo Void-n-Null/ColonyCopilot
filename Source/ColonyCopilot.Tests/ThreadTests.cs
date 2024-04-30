@@ -35,14 +35,34 @@ public class ThreadTests
         // Arrange
         var client = new Client(StaticConst.APIKey);
         var assistant = await Assistant.Create(client, "Test Assistant", "gpt-4-turbo", "You are a helpful assistant");
-        
+
         var thread = await Thread.Create(assistant);
-        
+
         var message = new Message
         {
             Content = "Hello, world!",
             Role = Message.RoleType.User
         };
+
+        // Act
+        var addedMessage = await thread.AddMessage(message);
+
+        // Assert
+        Assert.That(addedMessage.Content, Is.EqualTo(message.Content));
+        Assert.That(addedMessage.Role, Is.EqualTo(message.Role));
+        Assert.That(addedMessage.Id, Is.Not.Null);
+    }
+    
+    [Test]
+    public async Task ThreadAddMessage_ReturnsMessageWithCorrectPropertiesAndId()
+    {
+        // Arrange
+        var client = new Client(StaticConst.APIKey);
+        var assistant = await Assistant.Create(client, "Test Assistant", "gpt-4-turbo", "You are a helpful assistant");
+        
+        var thread = await Thread.Create(assistant);
+
+        var message = Message.User("Hello, world!");
         
         // Act
         var addedMessage = await thread.AddMessage(message);
@@ -50,7 +70,9 @@ public class ThreadTests
         // Assert
         Assert.That(addedMessage.Content, Is.EqualTo(message.Content));
         Assert.That(addedMessage.Role, Is.EqualTo(message.Role));
+        Assert.That(addedMessage.Id, Is.Not.Null);
     }
+    
 
     [Test]
     public async Task ThreadRetrieveMessages_ReturnsListOfMessages()
@@ -60,7 +82,7 @@ public class ThreadTests
         var assistant = await Assistant.Create(client, "Test Assistant", "gpt-4-turbo", "You are a helpful assistant");
 
         var thread = await Thread.Create(assistant);
-        
+
         var messages = new List<Message>()
         {
             new Message
@@ -74,7 +96,7 @@ public class ThreadTests
                 Role = Message.RoleType.Assistant
             }
         };
-        
+
         foreach (var message in messages)
         {
             await thread.AddMessage(message);
@@ -114,10 +136,10 @@ public class ThreadTests
         };
 
         newMessage = await thread.AddMessage(newMessage);
-        
+
         // Act
         var retrievedMessages = await thread.RetrieveMessages(oldMessage.Id);
-        
+
         // Assert
         Assert.That(retrievedMessages, Is.InstanceOf<List<Message>>());
         Assert.That(retrievedMessages.Count, Is.EqualTo(1));
@@ -126,14 +148,13 @@ public class ThreadTests
         Assert.That(retrievedMessages[0].Role, Is.EqualTo(newMessage.Role));
     }
 
-
     [Test]
-    public async Task ThreadStartAndRetrieveRun_ReturnsRunWithCorrectProperties()
+    public async Task ThreadCreateRun_AndGetRunSteps()
     {
         // Arrange
         var client = new Client(StaticConst.APIKey);
         var assistant = await Assistant.Create(client, "Test Assistant", "gpt-4-turbo", "You are a helpful assistant");
-
+        
         var thread = await Thread.Create(assistant);
         
         var message = new Message
@@ -144,18 +165,24 @@ public class ThreadTests
         
         await thread.AddMessage(message);
 
-        // Act 1
         var run = await thread.StartRun();
         
-        // Assert 1
-        Assert.That(run.Id, Is.Not.Null);
-        Assert.That(run.Thread, Is.SameAs(thread));
         
-        // Act 2
-        var retrievedRun = await run.Retrieve();
         
-        // Assert 2
-        Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
-        Assert.That(retrievedRun.Thread, Is.SameAs(thread));
+        // Act
+        var runSteps = await run.RetrieveSteps();
+        
+        // Assert
+        Assert.That(runSteps, Is.InstanceOf<List<RunStep>>());
+        //Attempt to get one run step
+        int attempts = 0;
+        while (runSteps.Count == 0 && attempts < 5)
+        {
+            runSteps = await run.RetrieveSteps();
+            await Task.Delay(1000);
+            attempts++;
+        }
+        Assert.That(runSteps.Count, Is.GreaterThan(0));
     }
+
 }
