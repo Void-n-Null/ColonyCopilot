@@ -74,7 +74,7 @@ public class ColonyAgent
         
         try
         {
-            _assistant = await Assistant.Create(client, "Colony Copilot", _model, finalInstructions, _functions);
+            _assistant = await Assistant.Create(client, $"Colony Copilot {Guid.NewGuid()}", _model, finalInstructions, _functions);
         } catch (Exception e)
         {
             CLog.Error("Error initializing assistant:  " + e);

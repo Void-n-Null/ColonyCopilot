@@ -17,7 +17,21 @@ public class UIUtil
         Text.Font = (GameFont)oldFont;
     }
     
-    public static bool Button(Rect rect, string label, Color color, GameFont font = default, TextAnchor anchor = default)
+    public static float RelativeWidth(float width)
+    {
+        //Relative to 1920, so 200 pixels would be 200/1920 = 0.10416666666666667
+        //We multiply by the actual screen width to get the actual width
+        return (width / 1920) * Screen.width;
+    }
+    
+    public static float RelativeHeight(float height)
+    {
+        //Relative to 1080, so 200 pixels would be 200/1080 = 0.18518518518518517
+        //We multiply by the actual screen height to get the actual height
+        return (height / 1080) * Screen.height;
+    }
+    
+    public static bool Button(Rect rect, string label, GameFont font = default, TextAnchor anchor = default)
     {
         int oldFont = (int)Text.Font;
         int oldAnchor = (int)Text.Anchor;
