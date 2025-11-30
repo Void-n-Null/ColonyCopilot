@@ -31,42 +31,46 @@ ColonyCopilot transforms RimWorld into a collaborative experience by embedding a
 
 ## 🏗️ Architecture Overview
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        ColonyCopilot.Rimworld                       │
-│  ┌─────────────┐  ┌──────────────┐  ┌────────────────────────────┐  │
-│  │  CcpOverlay │  │ ColonyAgent  │  │     ColonyContext          │  │
-│  │  (Custom UI)│  │ (AI Brain)   │  │  (State Tracking)          │  │
-│  └──────┬──────┘  └──────┬───────┘  └────────────┬───────────────┘  │
-│         │                │                       │                   │
-│         ▼                ▼                       ▼                   │
-│  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                    CCPGameManager                            │    │
-│  │         (Orchestrates all mod components)                    │    │
-│  └──────────────────────────┬──────────────────────────────────┘    │
-│                             │                                        │
-│         ┌───────────────────┼───────────────────┐                   │
-│         ▼                   ▼                   ▼                   │
-│  ┌─────────────┐    ┌───────────────┐   ┌─────────────────┐        │
-│  │ PawnFuncs   │    │DesignationQ   │   │ SpeechGenerator │        │
-│  │ (AI Tools)  │    │(Action Queue) │   │ (TTS Voice)     │        │
-│  └─────────────┘    └───────────────┘   └─────────────────┘        │
-└─────────────────────────────────────────────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                       ColonyCopilot.OpenAI                          │
-│  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌──────────────┐  │
-│  │   Client   │  │  Assistant │  │   Thread   │  │ FunctionMgr  │  │
-│  │ (API Core) │  │  (Agent)   │  │(Convo Mgr) │  │ (Tool Exec)  │  │
-│  └────────────┘  └────────────┘  └────────────┘  └──────────────┘  │
-└─────────────────────────────────────────────────────────────────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │   OpenAI API        │
-                    │   (Assistants v2)   │
-                    └─────────────────────┘
+```mermaid
+flowchart TB
+    subgraph Rimworld["ColonyCopilot.Rimworld"]
+        direction TB
+        subgraph TopLayer[" "]
+            direction LR
+            Overlay["🎨 CcpOverlay<br/><i>Custom UI</i>"]
+            Agent["🧠 ColonyAgent<br/><i>AI Brain</i>"]
+            Context["📊 ColonyContext<br/><i>State Tracking</i>"]
+        end
+        
+        Manager["⚙️ CCPGameManager<br/><i>Orchestrates all mod components</i>"]
+        
+        subgraph BottomLayer[" "]
+            direction LR
+            Pawn["🛠️ PawnFuncs<br/><i>AI Tools</i>"]
+            Queue["📋 DesignationQ<br/><i>Action Queue</i>"]
+            Speech["🔊 SpeechGenerator<br/><i>TTS Voice</i>"]
+        end
+        
+        Overlay --> Manager
+        Agent --> Manager
+        Context --> Manager
+        Manager --> Pawn
+        Manager --> Queue
+        Manager --> Speech
+    end
+    
+    subgraph OpenAI["ColonyCopilot.OpenAI"]
+        direction LR
+        Client["🔌 Client<br/><i>API Core</i>"]
+        Assistant["🤖 Assistant<br/><i>Agent</i>"]
+        Thread["💬 Thread<br/><i>Convo Mgr</i>"]
+        FuncMgr["⚡ FunctionMgr<br/><i>Tool Exec</i>"]
+    end
+    
+    API["☁️ OpenAI API<br/><i>Assistants v2</i>"]
+    
+    Rimworld --> OpenAI
+    OpenAI --> API
 ```
 
 ---
