@@ -14,6 +14,7 @@
         <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
         <LangVersion>11</LangVersion>
+        <RimWorldManagedDir Condition="'$(RimWorldManagedDir)' == ''">$(RIMWORLD_MANAGED_DIR)</RimWorldManagedDir>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -53,14 +54,14 @@
         </Reference>
         <Reference Include="System.Xml" />
         <Reference Include="UnityEngine.UnityWebRequestModule">
-          <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.UnityWebRequestModule.dll</HintPath>
+          <HintPath>$(RimWorldManagedDir)\UnityEngine.UnityWebRequestModule.dll</HintPath>
         </Reference>
     </ItemGroup>
     <ItemGroup>
         <Compile Include="AssistantTests.cs" />
         <Compile Include="ModelsTests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="StaticConst.cs" />
+        <Compile Include="TestConfiguration.cs" />
         <Compile Include="SystemTests.cs" />
         <Compile Include="ThreadTests.cs" />
         <Compile Include="Unit\FunctionTests.cs" />

@@ -1,7 +1,11 @@
 bin/
+obj/
 packages/
+Assemblies/
+.vs/
+.idea/
+*.user
+*.suo
 *.cache
-*.json
-*.xml
-*.json
-/Source/ColonyCopilot.Rimworld/obj
+*.dll
+*.pdb
