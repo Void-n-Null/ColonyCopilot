@@ -14,13 +14,11 @@
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <OutputPath>..\..\Assemblies\</OutputPath>
-        <BuildProjectRefrences>false</BuildProjectRefrences>
         <DebugSymbols>false</DebugSymbols>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
         <OutputPath>..\..\Assemblies\</OutputPath>
-        <BuildProjectRefrences>false</BuildProjectRefrences>
     </PropertyGroup>
 
     <ItemGroup>
