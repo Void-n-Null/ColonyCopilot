@@ -16,6 +16,8 @@ The economics changed soon afterward. [GPT-4o launched on May 13, 2024](https://
 
 The Assistants API used here has since been deprecated in favor of OpenAI's Responses API. This code is preserved as a working experiment from that period, not as a current integration example or a finished mod.
 
+I came back to the idea in late 2025 with [Artificial Rimtelligence](https://github.com/Void-n-Null/Artificial-Rimtelligence), a more ambitious multi-mod take on AI colony management that stopped at early scaffolding. ColonyCopilot remains the version that actually observed a colony and acted in it.
+
 ## Repository state
 
 The project is unfinished and is not packaged for installation. The repository contains the custom OpenAI client, assistant and tool-call loop, RimWorld integration, colony-context collection, in-game actions, UI, text-to-speech support, and local tests for the tool-function layer.
